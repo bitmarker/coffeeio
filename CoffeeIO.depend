@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1468497816 source:d:\98_privat\owncloud\documents\c\coffeeio\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1468497816 
+
+1468622930 source:/home/leonidlezner/ownCloud/Documents/C/CoffeeIO/main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1468623993 source:/home/leonidlezner/coffeeio/main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

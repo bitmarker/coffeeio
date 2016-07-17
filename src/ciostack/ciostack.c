@@ -204,3 +204,111 @@ void CIO_VariantPrint(COFFEEIO_VARIANT *variant)
 	}
 }
 
+void CIO_FrameInit(CIO_FRAME *frame, COFFEEIO_VARIANT *fields, unsigned int fieldsCount)
+{
+	unsigned int i;
+
+	frame->header.start_byte = 0xAA;
+
+	frame->fieldsCount = fieldsCount;
+	
+	frame->fields = fields;
+
+	for(i = 0; i < frame->fieldsCount; i++)
+	{
+		frame->fields[i].type = variant_none;
+	}
+}
+
+void CIO_Buffer_CalculateCRC(CIO_BUFFER_OBJECT *self, unsigned char *crc)
+{
+	*crc = 0;
+}
+
+unsigned int CIO_FrameToBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject) 
+{
+	unsigned int i;
+
+	frame->header.size = sizeof(frame->header);
+
+	for(i = 0; i < frame->fieldsCount; i++)
+	{
+		frame->header.size += CIO_VariantSize(&frame->fields[i]);
+	}
+
+	CIO_Buffer_SerializeChar(bufferObject, frame->header.start_byte);
+	CIO_Buffer_SerializeChar(bufferObject, frame->header.size);
+	CIO_Buffer_SerializeChar(bufferObject, frame->header.flags.byte);
+
+	for(i = 0; i < frame->fieldsCount; i++)
+	{
+		CIO_Buffer_SerializeVariant(bufferObject, &frame->fields[i]);
+	}
+
+	CIO_Buffer_CalculateCRC(bufferObject, &frame->header.crc);
+
+	CIO_Buffer_SerializeChar(bufferObject, frame->header.crc);
+
+	return 0;
+}
+
+CIO_RESULT CIO_FrameFromBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject) 
+{
+	unsigned int i;
+	CIO_RESULT result;
+
+	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.start_byte);
+
+	if(result != CIO_RESULT_GOOD)
+	{
+		return result;
+	}
+
+	// Get the size of the whole frame
+	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.size);
+
+	if(result != CIO_RESULT_GOOD)
+	{
+		return result;
+	}
+
+	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.flags.byte);
+
+	if(result != CIO_RESULT_GOOD)
+	{
+		return result;
+	}
+
+	for(i = 0; i < frame->fieldsCount; i++)
+	{
+		result = CIO_Buffer_DeserializeVariant(bufferObject, &frame->fields[i]);
+
+		if(result != CIO_RESULT_GOOD)
+		{
+			return result;
+		}
+	}
+
+	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.crc);
+
+
+	if(result != CIO_RESULT_GOOD)
+	{
+		return result;
+	}
+
+	return CIO_RESULT_GOOD;
+}
+
+void print_bufferObject(CIO_BUFFER_OBJECT *self)
+{
+    unsigned int i;
+
+    printf("Buffer size: %d\n", self->offset);
+
+    for(i = 0; i < self->offset; i++) {
+        printf("[%2.2d] %2.2X (%d)\n", i, self->buffer[i], self->buffer[i]);
+    }
+}
+
+

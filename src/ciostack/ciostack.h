@@ -73,6 +73,15 @@ typedef union cofeeio_buffer_chunk
     unsigned long bytes;
 } CIO_BUFFER_CHUNK;
 
+
+typedef struct cofeeio_frame
+{
+    CIO_FRAME_HEADER header;
+	COFFEEIO_VARIANT *fields;
+	unsigned char fieldsCount;
+} CIO_FRAME;
+
+
 void CIO_Buffer_Init(CIO_BUFFER_OBJECT *self);
 void CIO_Buffer_Reset(CIO_BUFFER_OBJECT *self);
 
@@ -90,5 +99,13 @@ void CIO_Buffer_SerializeVariant(CIO_BUFFER_OBJECT *bufferObject, COFFEEIO_VARIA
 unsigned char CIO_VariantSize(COFFEEIO_VARIANT *variant);
 CIO_RESULT CIO_Buffer_DeserializeVariant(CIO_BUFFER_OBJECT *bufferObject, COFFEEIO_VARIANT *variant);
 void CIO_VariantPrint(COFFEEIO_VARIANT *variant);
+
+void CIO_FrameInit(CIO_FRAME *frame, COFFEEIO_VARIANT *fields, unsigned int fieldsCount);
+unsigned int CIO_FrameToBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject);
+CIO_RESULT CIO_FrameFromBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject);
+
+void CIO_Buffer_CalculateCRC(CIO_BUFFER_OBJECT *self, unsigned char *crc);
+
+void print_bufferObject(CIO_BUFFER_OBJECT *self);
 
 #endif

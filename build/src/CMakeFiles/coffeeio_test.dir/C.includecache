@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../src/ciostack/ciostack.h
+
 /home/leonidlezner/coffeeio/src/ciostack/ciostack.c
 ciostack.h
 /home/leonidlezner/coffeeio/src/ciostack/ciostack.h
@@ -19,4 +21,6 @@ stdlib.h
 -
 string.h
 -
+ciostack.h
+/home/leonidlezner/coffeeio/src/ciostack.h
 

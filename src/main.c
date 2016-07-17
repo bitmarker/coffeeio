@@ -1,7 +1,157 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ciostack.h"
 
+
+void print_bufferObject(CIO_BUFFER_OBJECT *self)
+{
+    unsigned int i;
+
+    printf("Buffer size: %d\n", self->offset);
+
+    for(i = 0; i < self->offset; i++) {
+        printf("%d: %X (%d)\n", i, self->buffer[i], self->buffer[i]);
+    }
+}
+
+
+#define DEFINE_CIO_FRAME(type, fields_count) \
+	typedef struct cofeeio_frame_##type \
+	{ \
+	    CIO_FRAME_HEADER header; \
+		COFFEEIO_VARIANT fields[fields_count]; \
+	} CIO_FRAME_##type;
+
+
+DEFINE_CIO_FRAME(IO, 5);
+DEFINE_CIO_FRAME(HOST, 2);
+
+
+unsigned char CIO_VariantSize(COFFEEIO_VARIANT *variant)
+{
+	switch(variant->type)
+	{
+		case variant_u8:
+		case variant_s8:
+			return 1;
+		case variant_u16:
+		case variant_s16:
+			return 2;
+		case variant_u32:
+		case variant_s32:
+		case variant_f32:
+			return 4;
+		default:
+			return 0;
+	}
+}
+
+void CIO_Buffer_SerializeVariant(CIO_BUFFER_OBJECT *bufferObject, COFFEEIO_VARIANT *variant)
+{
+	switch(variant->type)
+	{
+		case variant_u8:
+		case variant_s8:
+			CIO_Buffer_SerializeChar(bufferObject, variant->value.u8);
+			break;
+		case variant_u16:
+		case variant_s16:
+			CIO_Buffer_SerializeInt(bufferObject, variant->value.u16);
+			break;
+		case variant_u32:
+		case variant_s32:
+			CIO_Buffer_SerializeLong(bufferObject, variant->value.u32);
+			break;
+		case variant_f32:
+			CIO_Buffer_SerializeFloat(bufferObject, variant->value.f32);
+			break;
+	}
+}
+
+unsigned int CIO_IOFrameToBuffer(CIO_FRAME_IO *frame, CIO_BUFFER_OBJECT *bufferObject) 
+{
+	unsigned int i;
+	unsigned int fieldsCount = sizeof(frame->fields) / sizeof(frame->fields[0]);
+
+	frame->header.start_byte = 0xAA;
+	frame->header.size = sizeof(frame->header);
+
+	for(i = 0; i < fieldsCount; i++)
+	{
+		frame->header.size += CIO_VariantSize(&frame->fields[i]);
+	}
+
+	CIO_Buffer_SerializeChar(bufferObject, frame->header.start_byte);
+	CIO_Buffer_SerializeChar(bufferObject, frame->header.size);
+	CIO_Buffer_SerializeChar(bufferObject, frame->header.flags.byte);
+
+	for(i = 0; i < fieldsCount; i++)
+	{
+		CIO_Buffer_SerializeVariant(bufferObject, &frame->fields[i]);
+	}
+
+	CIO_Buffer_SerializeChar(bufferObject, frame->header.crc);
+
+	return 0;
+}
+
+int main() {
+	// Host = Linux PC
+	// IO = Arduino Board
+
+	unsigned char buffer[20];
+    CIO_BUFFER_OBJECT bufferObject;
+
+
+    CIO_Buffer_Init(&bufferObject);
+
+    bufferObject.buffer = buffer;
+    bufferObject.size = sizeof(buffer);
+
+
+	
+	CIO_FRAME_IO frameIO;
+
+	frameIO.header.flags.byte = 0xFF;
+
+
+	frameIO.fields[0].type = variant_none;
+	frameIO.fields[1].type = variant_none;
+	frameIO.fields[2].type = variant_none;
+	frameIO.fields[3].type = variant_none;
+	frameIO.fields[4].type = variant_none;
+
+
+	frameIO.fields[0].type = variant_u32;
+	frameIO.fields[0].value.u32 = 0xABCDEF12;
+
+	frameIO.fields[1].type = variant_u32;
+	frameIO.fields[1].value.u32 = 0xABCDEF12;
+
+	frameIO.fields[2].type = variant_u16;
+	frameIO.fields[2].value.u16 = 0x1234;
+
+	frameIO.fields[3].type = variant_f32;
+	frameIO.fields[3].value.f32 = 12.5;
+
+	frameIO.fields[4].type = variant_f32;
+	frameIO.fields[4].value.f32 = 0.5;
+
+
+/*
+	frameIO.payload.somedata = 0xABCDEF;
+	frameIO.payload.temperature_1 = 20.5;
+	frameIO.payload.temperature_2 = 25.2;
+*/
+	
+	CIO_IOFrameToBuffer(&frameIO, &bufferObject);
+
+	print_bufferObject(&bufferObject);
+
+
+	return 0;
+}
 
 
 
@@ -17,57 +167,23 @@ typedef struct __attribute__((__packed__)) cofeeio_frame_payload
     float temperature;
 } CIO_FRAME_PAYLOAD;
 
-typedef struct __attribute__((__packed__)) cofeeio_frame
-{
-    unsigned char start_byte;
-    unsigned char size;
-    unsigned char crc;
 
-    CIO_FRAME_PAYLOAD payload;
-
-    union _flags
-    {
-        struct
-        {
-            unsigned char watchdog:1;
-            unsigned char type:1;
-            unsigned char reserverd_2:1;
-            unsigned char reserverd_3:1;
-            unsigned char reserverd_4:1;
-            unsigned char reserverd_5:1;
-            unsigned char reserverd_6:1;
-            unsigned char reserverd_7:1;
-        };
-        unsigned char byte;
-    } flags;
-
-} CIO_FRAME;
 
 void CIO_Buffer_CalculateCRC(CIO_BUFFER_OBJECT *self, unsigned char *crc)
 {
 
 }
 
-void print_buffer_object(CIO_BUFFER_OBJECT *self)
-{
-    unsigned int i;
-
-    printf("Buffer size: %d\n", self->offset);
-
-    for(i = 0; i < self->offset; i++) {
-        printf("%d: %X (%d)\n", i, self->buffer[i], self->buffer[i]);
-    }
-}
 
 int main()
 {
     unsigned char buffer[20];
-    CIO_BUFFER_OBJECT buffer_object;
+    CIO_BUFFER_OBJECT bufferObject;
 
-    CIO_Buffer_Init(&buffer_object);
+    CIO_Buffer_Init(&bufferObject);
 
-    buffer_object.buffer = buffer;
-    buffer_object.size = sizeof(buffer);
+    bufferObject.buffer = buffer;
+    bufferObject.size = sizeof(buffer);
 
 
 
@@ -92,51 +208,51 @@ int main()
 
 
     // Write the start byte
-    CIO_Buffer_SerializeChar(&buffer_object, frameOut.start_byte);
+    CIO_Buffer_SerializeChar(&bufferObject, frameOut.start_byte);
 
     // Put the size to the buffer and add one byte to the size
-    CIO_Buffer_SerializeChar(&buffer_object, frameOut.size);
+    CIO_Buffer_SerializeChar(&bufferObject, frameOut.size);
 
     // Put the flags
-    CIO_Buffer_SerializeChar(&buffer_object, frameOut.flags.byte);
+    CIO_Buffer_SerializeChar(&bufferObject, frameOut.flags.byte);
 
     // Payload - START
-    CIO_Buffer_SerializeChar(&buffer_object, frameOut.payload.somedata);
-    CIO_Buffer_SerializeLong(&buffer_object, frameOut.payload.rpm);
-    CIO_Buffer_SerializeFloat(&buffer_object, frameOut.payload.temperature);
+    CIO_Buffer_SerializeChar(&bufferObject, frameOut.payload.somedata);
+    CIO_Buffer_SerializeLong(&bufferObject, frameOut.payload.rpm);
+    CIO_Buffer_SerializeFloat(&bufferObject, frameOut.payload.temperature);
     // Payload - END
 
     // Calculate the CRC and write it to the buffer
-    CIO_Buffer_CalculateCRC(&buffer_object, &frameOut.crc);
-    CIO_Buffer_SerializeChar(&buffer_object, frameOut.crc);
+    CIO_Buffer_CalculateCRC(&bufferObject, &frameOut.crc);
+    CIO_Buffer_SerializeChar(&bufferObject, frameOut.crc);
 
 
-    print_buffer_object(&buffer_object);
+    print_bufferObject(&bufferObject);
 
     /*
-    CIO_Buffer_SerializeLong(&buffer_object, 123456);
-    CIO_Buffer_SerializeLong(&buffer_object, 789);
-    CIO_Buffer_SerializeChar(&buffer_object, 15);
+    CIO_Buffer_SerializeLong(&bufferObject, 123456);
+    CIO_Buffer_SerializeLong(&bufferObject, 789);
+    CIO_Buffer_SerializeChar(&bufferObject, 15);
 
-    printf("Buffer Size: %d Bytes\n", buffer_object.offset);
-
-
+    printf("Buffer Size: %d Bytes\n", bufferObject.offset);
 
 
-    CIO_Buffer_Reset(&buffer_object);
+
+
+    CIO_Buffer_Reset(&bufferObject);
 
 
 
     long long_val;
     char char_val;
 
-    CIO_Buffer_DeserializeLong(&buffer_object, &long_val);
+    CIO_Buffer_DeserializeLong(&bufferObject, &long_val);
     printf("%ld\n", long_val);
 
-    CIO_Buffer_DeserializeLong(&buffer_object, &long_val);
+    CIO_Buffer_DeserializeLong(&bufferObject, &long_val);
     printf("%ld\n", long_val);
 
-    if(CIO_Buffer_DeserializeChar(&buffer_object, &char_val) == CIO_RESULT_GOOD)
+    if(CIO_Buffer_DeserializeChar(&bufferObject, &char_val) == CIO_RESULT_GOOD)
     {
        printf("%d\n", char_val);
     }

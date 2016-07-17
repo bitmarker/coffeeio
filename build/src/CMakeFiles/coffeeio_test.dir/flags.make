@@ -6,5 +6,5 @@ C_FLAGS =
 
 C_DEFINES = 
 
-C_INCLUDES = -I/home/leonidlezner/coffeeio/src/src/ciostack 
+C_INCLUDES = -I/home/leonidlezner/coffeeio/src/ciostack 
 

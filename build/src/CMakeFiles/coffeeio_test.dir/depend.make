@@ -4,5 +4,6 @@
 src/CMakeFiles/coffeeio_test.dir/ciostack/ciostack.c.o: ../src/ciostack/ciostack.c
 src/CMakeFiles/coffeeio_test.dir/ciostack/ciostack.c.o: ../src/ciostack/ciostack.h
 
+src/CMakeFiles/coffeeio_test.dir/main.c.o: ../src/ciostack/ciostack.h
 src/CMakeFiles/coffeeio_test.dir/main.c.o: ../src/main.c
 

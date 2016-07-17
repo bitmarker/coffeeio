@@ -27,6 +27,13 @@ void CIO_Buffer_SerializeLong(CIO_BUFFER_OBJECT *self, long data)
     self->offset += 4;
 }
 
+void CIO_Buffer_SerializeInt(CIO_BUFFER_OBJECT *self, int data)
+{
+    self->buffer[self->offset] = data >> 8;
+    self->buffer[self->offset + 1] = data;
+    self->offset += 2;
+}
+
 void CIO_Buffer_SerializeFloat(CIO_BUFFER_OBJECT *self, float data)
 {
     CIO_BUFFER_CHUNK chunk;

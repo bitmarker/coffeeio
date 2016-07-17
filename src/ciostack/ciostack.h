@@ -75,13 +75,20 @@ typedef union cofeeio_buffer_chunk
 
 void CIO_Buffer_Init(CIO_BUFFER_OBJECT *self);
 void CIO_Buffer_Reset(CIO_BUFFER_OBJECT *self);
+
 void CIO_Buffer_SerializeChar(CIO_BUFFER_OBJECT *self, char data);
 void CIO_Buffer_SerializeInt(CIO_BUFFER_OBJECT *self, int data);
 void CIO_Buffer_SerializeLong(CIO_BUFFER_OBJECT *self, long data);
 void CIO_Buffer_SerializeFloat(CIO_BUFFER_OBJECT *self, float data);
+
 CIO_RESULT CIO_Buffer_DeserializeLong(CIO_BUFFER_OBJECT *self, long *data);
 CIO_RESULT CIO_Buffer_DeserializeChar(CIO_BUFFER_OBJECT *self, char *data);
+CIO_RESULT CIO_Buffer_DeserializeInt(CIO_BUFFER_OBJECT *self, int *data);
+CIO_RESULT CIO_Buffer_DeserializeFloat(CIO_BUFFER_OBJECT *self, float *data);
 
-
+void CIO_Buffer_SerializeVariant(CIO_BUFFER_OBJECT *bufferObject, COFFEEIO_VARIANT *variant);
+unsigned char CIO_VariantSize(COFFEEIO_VARIANT *variant);
+CIO_RESULT CIO_Buffer_DeserializeVariant(CIO_BUFFER_OBJECT *bufferObject, COFFEEIO_VARIANT *variant);
+void CIO_VariantPrint(COFFEEIO_VARIANT *variant);
 
 #endif

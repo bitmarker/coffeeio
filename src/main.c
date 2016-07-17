@@ -16,68 +16,37 @@ void print_bufferObject(CIO_BUFFER_OBJECT *self)
 }
 
 
-#define DEFINE_CIO_FRAME(type, fields_count) \
-	typedef struct cofeeio_frame_##type \
-	{ \
-	    CIO_FRAME_HEADER header; \
-		COFFEEIO_VARIANT fields[fields_count]; \
-	} CIO_FRAME_##type;
 
-
-DEFINE_CIO_FRAME(IO, 5);
-DEFINE_CIO_FRAME(HOST, 2);
-
-
-unsigned char CIO_VariantSize(COFFEEIO_VARIANT *variant)
+typedef struct cofeeio_frame
 {
-	switch(variant->type)
-	{
-		case variant_u8:
-		case variant_s8:
-			return 1;
-		case variant_u16:
-		case variant_s16:
-			return 2;
-		case variant_u32:
-		case variant_s32:
-		case variant_f32:
-			return 4;
-		default:
-			return 0;
-	}
-}
+    CIO_FRAME_HEADER header;
+	COFFEEIO_VARIANT *fields;
+	unsigned char fieldsCount;
+} CIO_FRAME;
 
-void CIO_Buffer_SerializeVariant(CIO_BUFFER_OBJECT *bufferObject, COFFEEIO_VARIANT *variant)
-{
-	switch(variant->type)
-	{
-		case variant_u8:
-		case variant_s8:
-			CIO_Buffer_SerializeChar(bufferObject, variant->value.u8);
-			break;
-		case variant_u16:
-		case variant_s16:
-			CIO_Buffer_SerializeInt(bufferObject, variant->value.u16);
-			break;
-		case variant_u32:
-		case variant_s32:
-			CIO_Buffer_SerializeLong(bufferObject, variant->value.u32);
-			break;
-		case variant_f32:
-			CIO_Buffer_SerializeFloat(bufferObject, variant->value.f32);
-			break;
-	}
-}
-
-unsigned int CIO_IOFrameToBuffer(CIO_FRAME_IO *frame, CIO_BUFFER_OBJECT *bufferObject) 
+void CIO_FrameInit(CIO_FRAME *frame, COFFEEIO_VARIANT *fields, unsigned int fieldsCount)
 {
 	unsigned int i;
-	unsigned int fieldsCount = sizeof(frame->fields) / sizeof(frame->fields[0]);
 
 	frame->header.start_byte = 0xAA;
+
+	frame->fieldsCount = fieldsCount;
+	
+	frame->fields = fields;
+
+	for(i = 0; i < frame->fieldsCount; i++)
+	{
+		frame->fields[i].type = variant_none;
+	}
+}
+
+unsigned int CIO_FrameToBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject) 
+{
+	unsigned int i;
+
 	frame->header.size = sizeof(frame->header);
 
-	for(i = 0; i < fieldsCount; i++)
+	for(i = 0; i < frame->fieldsCount; i++)
 	{
 		frame->header.size += CIO_VariantSize(&frame->fields[i]);
 	}
@@ -86,68 +55,138 @@ unsigned int CIO_IOFrameToBuffer(CIO_FRAME_IO *frame, CIO_BUFFER_OBJECT *bufferO
 	CIO_Buffer_SerializeChar(bufferObject, frame->header.size);
 	CIO_Buffer_SerializeChar(bufferObject, frame->header.flags.byte);
 
-	for(i = 0; i < fieldsCount; i++)
+	for(i = 0; i < frame->fieldsCount; i++)
 	{
 		CIO_Buffer_SerializeVariant(bufferObject, &frame->fields[i]);
 	}
+
+	// TODO: Calculate CRC
 
 	CIO_Buffer_SerializeChar(bufferObject, frame->header.crc);
 
 	return 0;
 }
 
-int main() {
-	// Host = Linux PC
-	// IO = Arduino Board
+CIO_RESULT CIO_FrameFromBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject) 
+{
+	unsigned int i;
+	CIO_RESULT result;
 
-	unsigned char buffer[20];
+	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.start_byte);
+
+	if(result != CIO_RESULT_GOOD)
+	{
+		return result;
+	}
+
+	// Get the size of the whole frame
+	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.size);
+
+	if(result != CIO_RESULT_GOOD)
+	{
+		return result;
+	}
+
+	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.flags.byte);
+
+	if(result != CIO_RESULT_GOOD)
+	{
+		return result;
+	}
+
+	for(i = 0; i < frame->fieldsCount; i++)
+	{
+		result = CIO_Buffer_DeserializeVariant(bufferObject, &frame->fields[i]);
+
+		if(result != CIO_RESULT_GOOD)
+		{
+			return result;
+		}
+	}
+
+	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.crc);
+
+	if(result != CIO_RESULT_GOOD)
+	{
+		return result;
+	}
+
+	return CIO_RESULT_GOOD;
+}
+
+int main() {
+	unsigned char buffer[32];
     CIO_BUFFER_OBJECT bufferObject;
 
+	COFFEEIO_VARIANT fieldsIO[5];
 
     CIO_Buffer_Init(&bufferObject);
-
     bufferObject.buffer = buffer;
     bufferObject.size = sizeof(buffer);
+	
+
+	CIO_FRAME frameIO;
 
 
 	
-	CIO_FRAME_IO frameIO;
-
-	frameIO.header.flags.byte = 0xFF;
+	CIO_FrameInit(&frameIO, fieldsIO, sizeof(fieldsIO) / sizeof(fieldsIO[0]));
 
 
-	frameIO.fields[0].type = variant_none;
-	frameIO.fields[1].type = variant_none;
-	frameIO.fields[2].type = variant_none;
-	frameIO.fields[3].type = variant_none;
-	frameIO.fields[4].type = variant_none;
-
+	frameIO.header.flags.byte = 0x12;
 
 	frameIO.fields[0].type = variant_u32;
-	frameIO.fields[0].value.u32 = 0xABCDEF12;
+	frameIO.fields[0].value.u32 = 1234567;
 
 	frameIO.fields[1].type = variant_u32;
-	frameIO.fields[1].value.u32 = 0xABCDEF12;
+	frameIO.fields[1].value.u32 = 987654321;
 
 	frameIO.fields[2].type = variant_u16;
-	frameIO.fields[2].value.u16 = 0x1234;
+	frameIO.fields[2].value.u16 = 1234;
 
 	frameIO.fields[3].type = variant_f32;
-	frameIO.fields[3].value.f32 = 12.5;
+	frameIO.fields[3].value.f32 = 12.532;
 
 	frameIO.fields[4].type = variant_f32;
-	frameIO.fields[4].value.f32 = 0.5;
+	frameIO.fields[4].value.f32 = 15.5;
 
-
-/*
-	frameIO.payload.somedata = 0xABCDEF;
-	frameIO.payload.temperature_1 = 20.5;
-	frameIO.payload.temperature_2 = 25.2;
-*/
 	
-	CIO_IOFrameToBuffer(&frameIO, &bufferObject);
+
+	CIO_FrameToBuffer(&frameIO, &bufferObject);
 
 	print_bufferObject(&bufferObject);
+
+	CIO_Buffer_Reset(&bufferObject);
+
+
+	{
+		unsigned int i;
+		COFFEEIO_VARIANT fieldsIO_temp[5];
+		CIO_FRAME frameIO_temp;
+		CIO_RESULT result;
+
+		CIO_FrameInit(&frameIO_temp, fieldsIO_temp, sizeof(fieldsIO_temp) / sizeof(fieldsIO_temp[0]));
+
+		frameIO_temp.fields[0].type = variant_u32;
+		frameIO_temp.fields[1].type = variant_u32;
+		frameIO_temp.fields[2].type = variant_u16;
+		frameIO_temp.fields[3].type = variant_f32;
+		frameIO_temp.fields[4].type = variant_f32;
+
+		result = CIO_FrameFromBuffer(&frameIO_temp, &bufferObject);
+
+		if(result != CIO_RESULT_GOOD)
+		{
+			printf("result != CIO_RESULT_GOOD\n");
+			return -1;
+		}
+		
+		for(i = 0; i < 5; i++)
+		{
+			CIO_VariantPrint(&fieldsIO_temp[i]);
+		}
+	}
+
+
 
 
 	return 0;

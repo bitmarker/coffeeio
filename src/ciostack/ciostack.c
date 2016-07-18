@@ -222,19 +222,27 @@ void CIO_FrameInit(CIO_FRAME *frame, COFFEEIO_VARIANT *fields, unsigned int fiel
 
 void CIO_Buffer_CalculateCRC(CIO_BUFFER_OBJECT *self, unsigned char *crc)
 {
-	*crc = 0;
+	*crc = crc8(self->buffer, self->offset);
+}
+
+unsigned int CIO_FrameSize(CIO_FRAME *frame)
+{
+	unsigned int i;
+	unsigned int size = sizeof(frame->header);
+	
+	for(i = 0; i < frame->fieldsCount; i++)
+	{
+		frame->header.size += CIO_VariantSize(&frame->fields[i]);
+	}
+
+	return size;
 }
 
 unsigned int CIO_FrameToBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject) 
 {
 	unsigned int i;
 
-	frame->header.size = sizeof(frame->header);
-
-	for(i = 0; i < frame->fieldsCount; i++)
-	{
-		frame->header.size += CIO_VariantSize(&frame->fields[i]);
-	}
+	frame->header.size = CIO_FrameSize(frame);
 
 	CIO_Buffer_SerializeChar(bufferObject, frame->header.start_byte);
 	CIO_Buffer_SerializeChar(bufferObject, frame->header.size);
@@ -255,6 +263,7 @@ unsigned int CIO_FrameToBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject
 CIO_RESULT CIO_FrameFromBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject) 
 {
 	unsigned int i;
+	unsigned char crc, crc_temp;
 	CIO_RESULT result;
 
 	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.start_byte);
@@ -289,12 +298,18 @@ CIO_RESULT CIO_FrameFromBuffer(CIO_FRAME *frame, CIO_BUFFER_OBJECT *bufferObject
 		}
 	}
 
-	result = CIO_Buffer_DeserializeChar(bufferObject, &frame->header.crc);
+	CIO_Buffer_CalculateCRC(bufferObject, &crc_temp);
 
+	result = CIO_Buffer_DeserializeChar(bufferObject, &crc);
 
 	if(result != CIO_RESULT_GOOD)
 	{
 		return result;
+	}
+
+	if(crc != crc_temp)
+	{
+		return CIO_RESULT_ERROR;
 	}
 
 	return CIO_RESULT_GOOD;
@@ -311,4 +326,25 @@ void print_bufferObject(CIO_BUFFER_OBJECT *self)
     }
 }
 
-
+/* Copyright (c) 2013 The Chromium OS Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ *
+ * Return CRC-8 of the data, using x^8 + x^2 + x + 1 polynomial.  A table-based
+ * algorithm would be faster, but for only a few bytes it isn't worth the code
+ * size. */
+unsigned char crc8(const void *vptr, int len)
+{
+	const unsigned char *data = vptr;
+	unsigned int crc = 0;
+	int i, j;
+	for (j = len; j; j--, data++) {
+		crc ^= (*data << 8);
+		for(i = 8; i; i--) {
+			if (crc & 0x8000)
+				crc ^= (0x1070 << 3);
+			crc <<= 1;
+		}
+	}
+	return (unsigned char)(crc >> 8);
+}

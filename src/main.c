@@ -6,7 +6,7 @@
 
 
 
-int main() {
+int main(int argc, char **argv) {
 	unsigned char buffer[32];
     CIO_BUFFER_OBJECT bufferObject;
 
@@ -19,15 +19,17 @@ int main() {
 
 	CIO_FRAME frameIO;
 
-
-	
 	CIO_FrameInit(&frameIO, fieldsIO, sizeof(fieldsIO) / sizeof(fieldsIO[0]));
 
 
 	frameIO.header.flags.byte = 0x12;
 
 	frameIO.fields[0].type = variant_u32;
-	frameIO.fields[0].value.u32 = 1234567;
+	
+	if(argc >= 2)
+		frameIO.fields[0].value.u32 = atoi(argv[1]);
+	else
+		frameIO.fields[0].value.u32 = 0;
 
 	frameIO.fields[1].type = variant_u32;
 	frameIO.fields[1].value.u32 = 987654321;

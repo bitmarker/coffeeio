@@ -108,4 +108,8 @@ void CIO_Buffer_CalculateCRC(CIO_BUFFER_OBJECT *self, unsigned char *crc);
 
 void print_bufferObject(CIO_BUFFER_OBJECT *self);
 
+unsigned char crc8(const void *vptr, int len);
+
+unsigned int CIO_FrameSize(CIO_FRAME *frame);
+
 #endif

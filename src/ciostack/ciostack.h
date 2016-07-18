@@ -1,6 +1,7 @@
 #ifndef CIOSTACK_H
 #define CIOSTACK_H
 
+#define CIO_START_BYTE 0xAA
 
 typedef char CIO_RESULT;
 
@@ -18,7 +19,7 @@ typedef struct __attribute__((__packed__)) coffeeio_frame_header
         struct
         {
             unsigned char watchdog:1;
-            unsigned char type:1;
+            unsigned char is_command:1;
             unsigned char reserverd_2:1;
             unsigned char reserverd_3:1;
             unsigned char reserverd_4:1;

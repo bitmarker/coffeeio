@@ -208,7 +208,7 @@ void CIO_FrameInit(CIO_FRAME *frame, COFFEEIO_VARIANT *fields, unsigned int fiel
 {
 	unsigned int i;
 
-	frame->header.start_byte = 0xAA;
+	frame->header.start_byte = CIO_START_BYTE;
 
 	frame->fieldsCount = fieldsCount;
 	
@@ -338,6 +338,7 @@ unsigned char crc8(const void *vptr, int len)
 	const unsigned char *data = vptr;
 	unsigned int crc = 0;
 	int i, j;
+
 	for (j = len; j; j--, data++) {
 		crc ^= (*data << 8);
 		for(i = 8; i; i--) {
@@ -346,5 +347,6 @@ unsigned char crc8(const void *vptr, int len)
 			crc <<= 1;
 		}
 	}
+
 	return (unsigned char)(crc >> 8);
 }

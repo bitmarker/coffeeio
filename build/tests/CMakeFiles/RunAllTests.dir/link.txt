@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/RunAllTests.dir/RunAllTests.cpp.o  -o ../bin/RunAllTests -rdynamic /usr/lib/x86_64-linux-gnu/libCppUTest.a libciostackTest.a 

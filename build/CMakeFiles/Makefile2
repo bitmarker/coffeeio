@@ -63,12 +63,12 @@ CMAKE_BINARY_DIR = /home/leonidlezner/coffeeio/build
 # Directory level rules for directory src
 
 # Convenience name for "all" pass in the directory.
-src/all: src/CMakeFiles/coffeeio_test.dir/all
+src/all: src/CMakeFiles/coffeeio_demo.dir/all
 
 .PHONY : src/all
 
 # Convenience name for "clean" pass in the directory.
-src/clean: src/CMakeFiles/coffeeio_test.dir/clean
+src/clean: src/CMakeFiles/coffeeio_demo.dir/clean
 
 .PHONY : src/clean
 
@@ -78,39 +78,133 @@ src/preinstall:
 .PHONY : src/preinstall
 
 #=============================================================================
-# Target rules for target src/CMakeFiles/coffeeio_test.dir
+# Target rules for target src/CMakeFiles/coffeeio_demo.dir
 
 # All Build rule for target.
-src/CMakeFiles/coffeeio_test.dir/all:
-	$(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/depend
-	$(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/leonidlezner/coffeeio/build/CMakeFiles --progress-num=1,2,3 "Built target coffeeio_test"
-.PHONY : src/CMakeFiles/coffeeio_test.dir/all
+src/CMakeFiles/coffeeio_demo.dir/all:
+	$(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/depend
+	$(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/leonidlezner/coffeeio/build/CMakeFiles --progress-num=6,7,8 "Built target coffeeio_demo"
+.PHONY : src/CMakeFiles/coffeeio_demo.dir/all
 
 # Include target in all.
-all: src/CMakeFiles/coffeeio_test.dir/all
+all: src/CMakeFiles/coffeeio_demo.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-src/CMakeFiles/coffeeio_test.dir/rule: cmake_check_build_system
+src/CMakeFiles/coffeeio_demo.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/leonidlezner/coffeeio/build/CMakeFiles 3
-	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/coffeeio_test.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/coffeeio_demo.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/leonidlezner/coffeeio/build/CMakeFiles 0
-.PHONY : src/CMakeFiles/coffeeio_test.dir/rule
+.PHONY : src/CMakeFiles/coffeeio_demo.dir/rule
 
 # Convenience name for target.
-coffeeio_test: src/CMakeFiles/coffeeio_test.dir/rule
+coffeeio_demo: src/CMakeFiles/coffeeio_demo.dir/rule
 
-.PHONY : coffeeio_test
-
-# clean rule for target.
-src/CMakeFiles/coffeeio_test.dir/clean:
-	$(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/clean
-.PHONY : src/CMakeFiles/coffeeio_test.dir/clean
+.PHONY : coffeeio_demo
 
 # clean rule for target.
-clean: src/CMakeFiles/coffeeio_test.dir/clean
+src/CMakeFiles/coffeeio_demo.dir/clean:
+	$(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/clean
+.PHONY : src/CMakeFiles/coffeeio_demo.dir/clean
+
+# clean rule for target.
+clean: src/CMakeFiles/coffeeio_demo.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory tests
+
+# Convenience name for "all" pass in the directory.
+tests/all: tests/CMakeFiles/RunAllTests.dir/all
+tests/all: tests/CMakeFiles/ciostackTest.dir/all
+
+.PHONY : tests/all
+
+# Convenience name for "clean" pass in the directory.
+tests/clean: tests/CMakeFiles/RunAllTests.dir/clean
+tests/clean: tests/CMakeFiles/ciostackTest.dir/clean
+
+.PHONY : tests/clean
+
+# Convenience name for "preinstall" pass in the directory.
+tests/preinstall:
+
+.PHONY : tests/preinstall
+
+#=============================================================================
+# Target rules for target tests/CMakeFiles/RunAllTests.dir
+
+# All Build rule for target.
+tests/CMakeFiles/RunAllTests.dir/all: tests/CMakeFiles/ciostackTest.dir/all
+	$(MAKE) -f tests/CMakeFiles/RunAllTests.dir/build.make tests/CMakeFiles/RunAllTests.dir/depend
+	$(MAKE) -f tests/CMakeFiles/RunAllTests.dir/build.make tests/CMakeFiles/RunAllTests.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/leonidlezner/coffeeio/build/CMakeFiles --progress-num=1,2 "Built target RunAllTests"
+.PHONY : tests/CMakeFiles/RunAllTests.dir/all
+
+# Include target in all.
+all: tests/CMakeFiles/RunAllTests.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+tests/CMakeFiles/RunAllTests.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/leonidlezner/coffeeio/build/CMakeFiles 5
+	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/RunAllTests.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/leonidlezner/coffeeio/build/CMakeFiles 0
+.PHONY : tests/CMakeFiles/RunAllTests.dir/rule
+
+# Convenience name for target.
+RunAllTests: tests/CMakeFiles/RunAllTests.dir/rule
+
+.PHONY : RunAllTests
+
+# clean rule for target.
+tests/CMakeFiles/RunAllTests.dir/clean:
+	$(MAKE) -f tests/CMakeFiles/RunAllTests.dir/build.make tests/CMakeFiles/RunAllTests.dir/clean
+.PHONY : tests/CMakeFiles/RunAllTests.dir/clean
+
+# clean rule for target.
+clean: tests/CMakeFiles/RunAllTests.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target tests/CMakeFiles/ciostackTest.dir
+
+# All Build rule for target.
+tests/CMakeFiles/ciostackTest.dir/all:
+	$(MAKE) -f tests/CMakeFiles/ciostackTest.dir/build.make tests/CMakeFiles/ciostackTest.dir/depend
+	$(MAKE) -f tests/CMakeFiles/ciostackTest.dir/build.make tests/CMakeFiles/ciostackTest.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/leonidlezner/coffeeio/build/CMakeFiles --progress-num=3,4,5 "Built target ciostackTest"
+.PHONY : tests/CMakeFiles/ciostackTest.dir/all
+
+# Include target in all.
+all: tests/CMakeFiles/ciostackTest.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+tests/CMakeFiles/ciostackTest.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/leonidlezner/coffeeio/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/ciostackTest.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/leonidlezner/coffeeio/build/CMakeFiles 0
+.PHONY : tests/CMakeFiles/ciostackTest.dir/rule
+
+# Convenience name for target.
+ciostackTest: tests/CMakeFiles/ciostackTest.dir/rule
+
+.PHONY : ciostackTest
+
+# clean rule for target.
+tests/CMakeFiles/ciostackTest.dir/clean:
+	$(MAKE) -f tests/CMakeFiles/ciostackTest.dir/build.make tests/CMakeFiles/ciostackTest.dir/clean
+.PHONY : tests/CMakeFiles/ciostackTest.dir/clean
+
+# clean rule for target.
+clean: tests/CMakeFiles/ciostackTest.dir/clean
 
 .PHONY : clean
 

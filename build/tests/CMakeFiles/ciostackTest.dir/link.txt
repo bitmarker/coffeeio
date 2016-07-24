@@ -1,0 +1,2 @@
+/usr/bin/ar qc libciostackTest.a  CMakeFiles/ciostackTest.dir/ciostack/ciostackTest.cpp.o CMakeFiles/ciostackTest.dir/__/src/ciostack/ciostack.c.o
+/usr/bin/ranlib libciostackTest.a

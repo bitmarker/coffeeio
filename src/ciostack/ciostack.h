@@ -83,8 +83,9 @@ typedef struct cofeeio_frame
 } CIO_FRAME;
 
 
-void CIO_Buffer_Init(CIO_BUFFER_OBJECT *self);
+void CIO_Buffer_Init(CIO_BUFFER_OBJECT *self, unsigned char *buffer, unsigned char len);
 void CIO_Buffer_Reset(CIO_BUFFER_OBJECT *self);
+void CIO_Buffer_PutByte(CIO_BUFFER_OBJECT *self, unsigned char dataByte);
 
 void CIO_Buffer_SerializeChar(CIO_BUFFER_OBJECT *self, char data);
 void CIO_Buffer_SerializeInt(CIO_BUFFER_OBJECT *self, int data);
@@ -112,5 +113,7 @@ void print_bufferObject(CIO_BUFFER_OBJECT *self);
 unsigned char crc8(const void *vptr, int len);
 
 unsigned int CIO_FrameSize(CIO_FRAME *frame);
+
+void CIO_CheckForFrame(CIO_BUFFER_OBJECT *self);
 
 #endif

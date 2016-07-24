@@ -12,10 +12,7 @@ int main(int argc, char **argv) {
 
 	COFFEEIO_VARIANT fieldsIO[5];
 
-    CIO_Buffer_Init(&bufferObject);
-    bufferObject.buffer = buffer;
-    bufferObject.size = sizeof(buffer);
-	
+    CIO_Buffer_Init(&bufferObject, buffer, sizeof(buffer));
 
 	CIO_FRAME frameIO;
 
@@ -51,12 +48,15 @@ int main(int argc, char **argv) {
 
 	CIO_Buffer_Reset(&bufferObject);
 
-
 	{
 		unsigned int i;
 		COFFEEIO_VARIANT fieldsIO_temp[5];
 		CIO_FRAME frameIO_temp;
 		CIO_RESULT result;
+
+		unsigned char rcvBuffer[50];
+		CIO_BUFFER_OBJECT rcvBufferObject;
+		CIO_Buffer_Init(&rcvBufferObject, rcvBuffer, 50);
 
 		CIO_FrameInit(&frameIO_temp, fieldsIO_temp, sizeof(fieldsIO_temp) / sizeof(fieldsIO_temp[0]));
 
@@ -66,6 +66,19 @@ int main(int argc, char **argv) {
 		frameIO_temp.fields[3].type = variant_f32;
 		frameIO_temp.fields[4].type = variant_f32;
 
+
+
+		for(i = 0; i < bufferObject.size; i++)
+		{
+			CIO_Buffer_PutByte(&rcvBufferObject, bufferObject.buffer[i]);
+
+			CIO_CheckForFrame(&rcvBufferObject);
+			
+			//printf("%X\n", bufferObject.buffer[i]);
+		}
+
+
+/*
 		result = CIO_FrameFromBuffer(&frameIO_temp, &bufferObject);
 
 		if(result != CIO_RESULT_GOOD)
@@ -78,6 +91,8 @@ int main(int argc, char **argv) {
 		{
 			CIO_VariantPrint(&fieldsIO_temp[i]);
 		}
+*/
+
 	}
 
 

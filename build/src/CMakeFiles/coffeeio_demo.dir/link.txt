@@ -1,0 +1,1 @@
+/usr/bin/cc     CMakeFiles/coffeeio_demo.dir/main.c.o CMakeFiles/coffeeio_demo.dir/ciostack/ciostack.c.o  -o ../bin/coffeeio_demo -rdynamic 

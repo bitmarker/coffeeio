@@ -1,7 +1,8 @@
 ROOTDIR=`pwd`
 
-mkdir -p build/src_generated
+mkdir build
 cd build
 
 cmake ${ROOTDIR}
+
 make

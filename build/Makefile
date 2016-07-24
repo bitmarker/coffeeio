@@ -111,17 +111,43 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named coffeeio_test
+# Target rules for targets named coffeeio_demo
 
 # Build rule for target.
-coffeeio_test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 coffeeio_test
-.PHONY : coffeeio_test
+coffeeio_demo: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 coffeeio_demo
+.PHONY : coffeeio_demo
 
 # fast build rule for target.
-coffeeio_test/fast:
-	$(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/build
-.PHONY : coffeeio_test/fast
+coffeeio_demo/fast:
+	$(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/build
+.PHONY : coffeeio_demo/fast
+
+#=============================================================================
+# Target rules for targets named RunAllTests
+
+# Build rule for target.
+RunAllTests: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 RunAllTests
+.PHONY : RunAllTests
+
+# fast build rule for target.
+RunAllTests/fast:
+	$(MAKE) -f tests/CMakeFiles/RunAllTests.dir/build.make tests/CMakeFiles/RunAllTests.dir/build
+.PHONY : RunAllTests/fast
+
+#=============================================================================
+# Target rules for targets named ciostackTest
+
+# Build rule for target.
+ciostackTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ciostackTest
+.PHONY : ciostackTest
+
+# fast build rule for target.
+ciostackTest/fast:
+	$(MAKE) -f tests/CMakeFiles/ciostackTest.dir/build.make tests/CMakeFiles/ciostackTest.dir/build
+.PHONY : ciostackTest/fast
 
 # Help Target
 help:
@@ -131,7 +157,9 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... coffeeio_test"
+	@echo "... coffeeio_demo"
+	@echo "... RunAllTests"
+	@echo "... ciostackTest"
 .PHONY : help
 
 

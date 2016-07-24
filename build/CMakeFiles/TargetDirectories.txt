@@ -1,5 +1,9 @@
 /home/leonidlezner/coffeeio/build/CMakeFiles/edit_cache.dir
 /home/leonidlezner/coffeeio/build/CMakeFiles/rebuild_cache.dir
-/home/leonidlezner/coffeeio/build/src/CMakeFiles/rebuild_cache.dir
 /home/leonidlezner/coffeeio/build/src/CMakeFiles/edit_cache.dir
-/home/leonidlezner/coffeeio/build/src/CMakeFiles/coffeeio_test.dir
+/home/leonidlezner/coffeeio/build/src/CMakeFiles/rebuild_cache.dir
+/home/leonidlezner/coffeeio/build/src/CMakeFiles/coffeeio_demo.dir
+/home/leonidlezner/coffeeio/build/tests/CMakeFiles/edit_cache.dir
+/home/leonidlezner/coffeeio/build/tests/CMakeFiles/RunAllTests.dir
+/home/leonidlezner/coffeeio/build/tests/CMakeFiles/rebuild_cache.dir
+/home/leonidlezner/coffeeio/build/tests/CMakeFiles/ciostackTest.dir

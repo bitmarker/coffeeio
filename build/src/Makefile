@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/leonidlezner/coffeeio/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,19 +111,19 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/CMakeFiles/coffeeio_test.dir/rule:
-	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/coffeeio_test.dir/rule
-.PHONY : src/CMakeFiles/coffeeio_test.dir/rule
+src/CMakeFiles/coffeeio_demo.dir/rule:
+	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/coffeeio_demo.dir/rule
+.PHONY : src/CMakeFiles/coffeeio_demo.dir/rule
 
 # Convenience name for target.
-coffeeio_test: src/CMakeFiles/coffeeio_test.dir/rule
+coffeeio_demo: src/CMakeFiles/coffeeio_demo.dir/rule
 
-.PHONY : coffeeio_test
+.PHONY : coffeeio_demo
 
 # fast build rule for target.
-coffeeio_test/fast:
-	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/build
-.PHONY : coffeeio_test/fast
+coffeeio_demo/fast:
+	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/build
+.PHONY : coffeeio_demo/fast
 
 ciostack/ciostack.o: ciostack/ciostack.c.o
 
@@ -131,7 +131,7 @@ ciostack/ciostack.o: ciostack/ciostack.c.o
 
 # target to build an object file
 ciostack/ciostack.c.o:
-	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/ciostack/ciostack.c.o
+	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/ciostack/ciostack.c.o
 .PHONY : ciostack/ciostack.c.o
 
 ciostack/ciostack.i: ciostack/ciostack.c.i
@@ -140,7 +140,7 @@ ciostack/ciostack.i: ciostack/ciostack.c.i
 
 # target to preprocess a source file
 ciostack/ciostack.c.i:
-	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/ciostack/ciostack.c.i
+	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/ciostack/ciostack.c.i
 .PHONY : ciostack/ciostack.c.i
 
 ciostack/ciostack.s: ciostack/ciostack.c.s
@@ -149,7 +149,7 @@ ciostack/ciostack.s: ciostack/ciostack.c.s
 
 # target to generate assembly for a file
 ciostack/ciostack.c.s:
-	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/ciostack/ciostack.c.s
+	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/ciostack/ciostack.c.s
 .PHONY : ciostack/ciostack.c.s
 
 main.o: main.c.o
@@ -158,7 +158,7 @@ main.o: main.c.o
 
 # target to build an object file
 main.c.o:
-	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/main.c.o
+	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/main.c.o
 .PHONY : main.c.o
 
 main.i: main.c.i
@@ -167,7 +167,7 @@ main.i: main.c.i
 
 # target to preprocess a source file
 main.c.i:
-	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/main.c.i
+	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/main.c.i
 .PHONY : main.c.i
 
 main.s: main.c.s
@@ -176,7 +176,7 @@ main.s: main.c.s
 
 # target to generate assembly for a file
 main.c.s:
-	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_test.dir/build.make src/CMakeFiles/coffeeio_test.dir/main.c.s
+	cd /home/leonidlezner/coffeeio/build && $(MAKE) -f src/CMakeFiles/coffeeio_demo.dir/build.make src/CMakeFiles/coffeeio_demo.dir/main.c.s
 .PHONY : main.c.s
 
 # Help Target
@@ -185,9 +185,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... coffeeio_test"
+	@echo "... rebuild_cache"
+	@echo "... coffeeio_demo"
 	@echo "... ciostack/ciostack.o"
 	@echo "... ciostack/ciostack.i"
 	@echo "... ciostack/ciostack.s"

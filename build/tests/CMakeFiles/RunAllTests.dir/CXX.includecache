@@ -1,0 +1,12 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/leonidlezner/coffeeio/tests/RunAllTests.cpp
+CppUTest/CommandLineTestRunner.h
+/home/leonidlezner/coffeeio/tests/CppUTest/CommandLineTestRunner.h
+

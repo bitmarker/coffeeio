@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/leonidlezner/coffeeio/src/ciostack/ciostack.c
+stdio.h
+-
+ciostack.h
+/home/leonidlezner/coffeeio/src/ciostack/ciostack.h
+
+/home/leonidlezner/coffeeio/src/ciostack/ciostack.h
+

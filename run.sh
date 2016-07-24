@@ -1,2 +1,2 @@
 cd build/bin
-./coffeeio_test $1
+./coffeeio_demo $@

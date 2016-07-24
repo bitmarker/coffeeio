@@ -1,17 +1,57 @@
 #include <stdio.h>
 #include "ciostack.h"
 
-void CIO_Buffer_Init(CIO_BUFFER_OBJECT *self)
+void CIO_Buffer_Init(CIO_BUFFER_OBJECT *self, unsigned char *buffer, unsigned char len)
 {
-    self->buffer = 0;
-    self->size = 0;
-    self->offset = 0;
+	self->buffer = buffer;
+    self->size = len;
+	self->offset = 0;
 }
 
 void CIO_Buffer_Reset(CIO_BUFFER_OBJECT *self)
 {
     self->offset = 0;
 }
+
+void CIO_Buffer_PutByte(CIO_BUFFER_OBJECT *self, unsigned char dataByte)
+{
+	if(self->offset < self->size)
+	{
+		self->buffer[self->offset] = dataByte;
+		self->offset += 1;
+	}
+}
+
+void CIO_CheckForFrame(CIO_BUFFER_OBJECT *self)
+{
+	if(self->offset > 2)
+	{
+		unsigned char start_byte = self->buffer[0];
+
+		if(start_byte != 0xAA)
+		{
+			return;
+		}
+
+		unsigned char size = self->buffer[1];
+		
+		if(self->offset < size)
+		{
+			return;
+		}
+
+		if(self->offset >= size)
+		{
+			printf("-> {%d}\n", self->offset);
+
+			self->offset = 0;
+		}
+
+		printf("{%d}\n", self->offset);
+	}
+}
+
+
 
 void CIO_Buffer_SerializeChar(CIO_BUFFER_OBJECT *self, char data)
 {
@@ -140,15 +180,15 @@ void CIO_Buffer_SerializeVariant(CIO_BUFFER_OBJECT *bufferObject, COFFEEIO_VARIA
 	{
 		case variant_u8:
 		case variant_s8:
-			CIO_Buffer_SerializeChar(bufferObject, variant->value.u8);
+			CIO_Buffer_SerializeChar(bufferObject, (signed char)variant->value.u8);
 			break;
 		case variant_u16:
 		case variant_s16:
-			CIO_Buffer_SerializeInt(bufferObject, variant->value.u16);
+			CIO_Buffer_SerializeInt(bufferObject, (signed int)variant->value.u16);
 			break;
 		case variant_u32:
 		case variant_s32:
-			CIO_Buffer_SerializeLong(bufferObject, variant->value.u32);
+			CIO_Buffer_SerializeLong(bufferObject, (signed long)variant->value.u32);
 			break;
 		case variant_f32:
 			CIO_Buffer_SerializeFloat(bufferObject, variant->value.f32);
@@ -232,7 +272,7 @@ unsigned int CIO_FrameSize(CIO_FRAME *frame)
 	
 	for(i = 0; i < frame->fieldsCount; i++)
 	{
-		frame->header.size += CIO_VariantSize(&frame->fields[i]);
+		size += CIO_VariantSize(&frame->fields[i]);
 	}
 
 	return size;

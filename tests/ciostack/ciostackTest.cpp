@@ -20,7 +20,7 @@ TEST_GROUP(ciostack)
   }
 };
 
-TEST(ciostack, init_buffer_object)
+TEST(ciostack, buffer_object)
 {
 	unsigned char buffer[32];
     CIO_BUFFER_OBJECT bufferObject;
@@ -28,6 +28,20 @@ TEST(ciostack, init_buffer_object)
 
 	CHECK_EQUAL(buffer, bufferObject.buffer);
 	CHECK_EQUAL(sizeof(buffer), bufferObject.size);
+
+	CIO_Buffer_SerializeChar(&bufferObject, 0xAB);
+	CHECK_EQUAL(1, bufferObject.offset);
+	CHECK_EQUAL(0xAB, buffer[0]);
+
+	CIO_Buffer_SerializeChar(&bufferObject, 0xCD);
+	CHECK_EQUAL(2, bufferObject.offset);
+	CHECK_EQUAL(0xAB, buffer[0]);
+	CHECK_EQUAL(0xCD, buffer[1]);
+
+	// TODO: Test different data types
+
+	CIO_Buffer_Reset(&bufferObject);
+	CHECK_EQUAL(0, bufferObject.offset);
 }
 
 TEST(ciostack, init_frame_init)
@@ -41,11 +55,14 @@ TEST(ciostack, init_frame_init)
 	CHECK_EQUAL(fieldsIO, frameIO.fields);
 }
 
-TEST(ciostack, xy)
+TEST(ciostack, frame_to_buffer)
 {
+	unsigned char buffer[32];
+    CIO_BUFFER_OBJECT bufferObject;
 	CIO_FRAME frameIO;
 	COFFEEIO_VARIANT fieldsIO[5];
 
+    CIO_Buffer_Init(&bufferObject, buffer, sizeof(buffer));
 	CIO_FrameInit(&frameIO, fieldsIO, sizeof(fieldsIO) / sizeof(fieldsIO[0]));
 
 	frameIO.header.flags.byte = 0x12;
@@ -65,5 +82,5 @@ TEST(ciostack, xy)
 	frameIO.fields[4].type = variant_f32;
 	frameIO.fields[4].value.f32 = 15.5;
 
-	
+	CIO_FrameToBuffer(&frameIO, &bufferObject);
 }

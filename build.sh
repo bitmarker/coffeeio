@@ -1,6 +1,6 @@
 ROOTDIR=`pwd`
 
-mkdir build
+mkdir -p build
 cd build
 
 cmake ${ROOTDIR}

@@ -65,5 +65,5 @@ TEST(ciostack, xy)
 	frameIO.fields[4].type = variant_f32;
 	frameIO.fields[4].value.f32 = 15.5;
 
-
+	
 }

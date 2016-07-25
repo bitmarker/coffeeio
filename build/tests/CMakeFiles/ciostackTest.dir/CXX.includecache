@@ -11,6 +11,8 @@
 /home/leonidlezner/coffeeio/tests/ciostack/ciostackTest.cpp
 CppUTest/TestHarness.h
 /home/leonidlezner/coffeeio/tests/ciostack/CppUTest/TestHarness.h
+cstdio
+-
 ciostack/ciostack.h
 /home/leonidlezner/coffeeio/tests/ciostack/ciostack/ciostack.h
 

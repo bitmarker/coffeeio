@@ -1,8 +1,9 @@
 #include "CppUTest/TestHarness.h"
+#include <cstdio>
 
 extern "C"
 {
-  #include "ciostack/ciostack.h"
+	#include "ciostack/ciostack.h"  
 }
 
 TEST_GROUP(ciostack)
@@ -22,6 +23,11 @@ TEST_GROUP(ciostack)
 
 TEST(ciostack, buffer_object)
 {
+	unsigned char offset = 0;
+	char u8 = 0;
+	int u16;
+	long u32;
+	float f32;
 	unsigned char buffer[32];
     CIO_BUFFER_OBJECT bufferObject;
     CIO_Buffer_Init(&bufferObject, buffer, sizeof(buffer));
@@ -31,17 +37,51 @@ TEST(ciostack, buffer_object)
 
 	CIO_Buffer_SerializeChar(&bufferObject, 0xAB);
 	CHECK_EQUAL(1, bufferObject.offset);
-	CHECK_EQUAL(0xAB, buffer[0]);
+	CHECK_EQUAL(0xAB, buffer[offset++]);
 
 	CIO_Buffer_SerializeChar(&bufferObject, 0xCD);
 	CHECK_EQUAL(2, bufferObject.offset);
 	CHECK_EQUAL(0xAB, buffer[0]);
-	CHECK_EQUAL(0xCD, buffer[1]);
+	CHECK_EQUAL(0xCD, buffer[offset++]);
 
-	// TODO: Test different data types
+	CIO_Buffer_SerializeInt(&bufferObject, 0xEF75);
+	CHECK_EQUAL(0xEF, buffer[offset++]);
+	CHECK_EQUAL(0x75, buffer[offset++]);
+
+	CIO_Buffer_SerializeLong(&bufferObject, 0x12345678);
+	CHECK_EQUAL(0x12, buffer[offset++]);
+	CHECK_EQUAL(0x34, buffer[offset++]);
+	CHECK_EQUAL(0x56, buffer[offset++]);
+	CHECK_EQUAL(0x78, buffer[offset++]);
+
+	CIO_Buffer_SerializeFloat(&bufferObject, 12.3456);
+	CHECK_EQUAL(0x41, buffer[offset++]);
+	CHECK_EQUAL(0x45, buffer[offset++]);
+	CHECK_EQUAL(0x87, buffer[offset++]);
+	CHECK_EQUAL(0x94, buffer[offset++]);
+
+	// Check the offset
+	CHECK_EQUAL(offset, bufferObject.offset);
 
 	CIO_Buffer_Reset(&bufferObject);
 	CHECK_EQUAL(0, bufferObject.offset);
+
+	CIO_Buffer_DeserializeChar(&bufferObject, &u8);
+	CHECK_EQUAL(0xAB, (unsigned char)u8);
+
+	CIO_Buffer_DeserializeChar(&bufferObject, &u8);
+	CHECK_EQUAL(0xCD, (unsigned char)u8);
+
+	CIO_Buffer_DeserializeInt(&bufferObject, &u16);
+	CHECK_EQUAL(0xEF75, (unsigned int)u16);
+
+	CIO_Buffer_DeserializeLong(&bufferObject, &u32);
+	CHECK_EQUAL(0x12345678, (unsigned int)u32);
+
+	CIO_Buffer_DeserializeFloat(&bufferObject, &f32);
+	DOUBLES_EQUAL(12.3456, f32, 0.00001);
+	
+	CHECK_EQUAL(offset, bufferObject.offset);
 }
 
 TEST(ciostack, init_frame_init)

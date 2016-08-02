@@ -21,6 +21,32 @@ TEST_GROUP(ciostack)
   }
 };
 
+TEST(ciostack, buffer_object_empty_buffer__char)
+{
+	unsigned char offset = 0;
+	char u8 = 0;
+	int u16;
+	long u32;
+	float f32;
+	unsigned char buffer[2];
+    CIO_RESULT result;
+    
+    CIO_BUFFER_OBJECT bufferObject;
+    CIO_Buffer_Init(&bufferObject, buffer, sizeof(buffer));
+
+	CHECK_EQUAL(buffer, bufferObject.buffer);
+	CHECK_EQUAL(sizeof(buffer), bufferObject.size);
+
+	result = CIO_Buffer_SerializeChar(&bufferObject, 0xAB);
+	CHECK_EQUAL(CIO_RESULT_GOOD, result);
+
+	result = CIO_Buffer_SerializeChar(&bufferObject, 0xCD);
+	CHECK_EQUAL(CIO_RESULT_GOOD, result);
+    
+	result = CIO_Buffer_SerializeChar(&bufferObject, 0xAB);
+	CHECK_EQUAL(CIO_RESULT_ERROR, result);
+}
+
 TEST(ciostack, buffer_object)
 {
 	unsigned char offset = 0;

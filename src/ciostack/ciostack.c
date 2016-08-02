@@ -53,10 +53,17 @@ void CIO_CheckForFrame(CIO_BUFFER_OBJECT *self)
 
 
 
-void CIO_Buffer_SerializeChar(CIO_BUFFER_OBJECT *self, char data)
+CIO_RESULT CIO_Buffer_SerializeChar(CIO_BUFFER_OBJECT *self, char data)
 {
+    if(self->offset > (self->size - 1)) {
+        return CIO_RESULT_ERROR;
+    }
+
     self->buffer[self->offset] = data;
+
     self->offset += 1;
+
+    return CIO_RESULT_GOOD;
 }
 
 void CIO_Buffer_SerializeLong(CIO_BUFFER_OBJECT *self, long data)

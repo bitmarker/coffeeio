@@ -20,7 +20,7 @@ typedef struct __attribute__((__packed__)) coffeeio_frame_header
         {
             unsigned char watchdog:1;
             unsigned char is_command:1;
-            unsigned char reserverd_2:1;
+            unsigned char extended_frame:1;
             unsigned char reserverd_3:1;
             unsigned char reserverd_4:1;
             unsigned char reserverd_5:1;
@@ -87,7 +87,7 @@ void CIO_Buffer_Init(CIO_BUFFER_OBJECT *self, unsigned char *buffer, unsigned ch
 void CIO_Buffer_Reset(CIO_BUFFER_OBJECT *self);
 void CIO_Buffer_PutByte(CIO_BUFFER_OBJECT *self, unsigned char dataByte);
 
-void CIO_Buffer_SerializeChar(CIO_BUFFER_OBJECT *self, char data);
+CIO_RESULT CIO_Buffer_SerializeChar(CIO_BUFFER_OBJECT *self, char data);
 void CIO_Buffer_SerializeInt(CIO_BUFFER_OBJECT *self, int data);
 void CIO_Buffer_SerializeLong(CIO_BUFFER_OBJECT *self, long data);
 void CIO_Buffer_SerializeFloat(CIO_BUFFER_OBJECT *self, float data);
